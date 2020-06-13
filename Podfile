@@ -3,10 +3,15 @@
 
 target 'Messenger' do
   use_frameworks!
+# Firebase
 pod 'Firebase/Core'
 pod 'Firebase/Auth'
 pod 'Firebase/Database'
 
+# Facebook login
+
+pod 'FBSDKLoginKit'
+    
 
 
 end
