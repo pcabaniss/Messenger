@@ -27,7 +27,7 @@ extension DatabaseManager {
     public func userExsist(with email: String, completion: @escaping ((Bool) -> Void)) {
         
         var safeEmail = email.replacingOccurrences(of: ".", with: "-")
-            safeEmail = email.replacingOccurrences(of: "@", with: "-")
+            safeEmail = safeEmail.replacingOccurrences(of: "@", with: "-")
         
         database.child(safeEmail).observeSingleEvent(of: .value, with: { snapshot in
             guard snapshot.value as? String != nil else {
@@ -68,4 +68,5 @@ struct ChatAppUser {
     }
     //omit saving password, its not good practice if its not encrypted
     //let prifilePictureUrl: String
+
 }
