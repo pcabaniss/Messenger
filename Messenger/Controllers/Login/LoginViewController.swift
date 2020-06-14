@@ -9,6 +9,7 @@
 import UIKit
 import FirebaseAuth
 import FBSDKLoginKit
+import GoogleSignIn
 
 class LoginViewController: UIViewController {
     private let scrollView: UIScrollView = {
@@ -87,9 +88,24 @@ class LoginViewController: UIViewController {
         return button
     }()
     
+    private let googleLogInButton = GIDSignInButton()
+    private var loginObserver: NSObjectProtocol?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        loginObserver = NotificationCenter.default.addObserver(forName: Notification.Name.didLogInNotification, object: nil, queue: .main, using: { [weak self] _ in
+            guard let strongSelf = self else {
+                return
+            }
+            
+            strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+            
+            
+        })
+        
+        GIDSignIn.sharedInstance()?.presentingViewController = self
         
         view.backgroundColor = .white
         title = "Log in"
@@ -113,9 +129,16 @@ class LoginViewController: UIViewController {
         scrollView.addSubview(emailField)
         scrollView.addSubview(passwordField)
         scrollView.addSubview(loginButton)
-        
+        scrollView.addSubview(googleLogInButton)
         scrollView.addSubview(facebookLoginButton)
     }
+    
+    deinit {
+        if let observer = loginObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         scrollView.frame = view.bounds
@@ -141,7 +164,10 @@ class LoginViewController: UIViewController {
                                            y: loginButton.bottom+10,
                                            width: scrollView.width-60,
                                            height: 52)
-        facebookLoginButton.frame.origin.y = loginButton.bottom+20
+        googleLogInButton.frame = CGRect(x: 30,
+                                         y: facebookLoginButton.bottom+10,
+                                         width: scrollView.width-60,
+                                         height: 52)
     }
     
     
