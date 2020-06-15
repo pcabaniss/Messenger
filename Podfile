@@ -15,6 +15,9 @@ pod 'FBSDKLoginKit'
 #Google Login
 pod 'GoogleSignIn'
     
-
+pod 'MessageKit'
+pod 'JGProgressHUD'
+pod 'RealmSwift'
+pod 'SDWebImage'
 
 end
