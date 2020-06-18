@@ -26,14 +26,14 @@ final class StorageManager {
             guard error == nil else {
                 // failed
                 print("failed to upload data to firebase for picture")
-                completion(.failure(storageErrors.failedToUpload))
+                completion(.failure(StorageErrors.failedToUpload))
                 return
             }
 
             self.storage.child("images/\(fileName)").downloadURL(completion: { url, error in
                 guard let url = url else {
                     print("Failed to get download url")
-                    completion(.failure(storageErrors.failedToGetDownloadURL))
+                    completion(.failure(StorageErrors.failedToGetDownloadUrl))
                     return
                 }
 
@@ -44,22 +44,22 @@ final class StorageManager {
         })
     }
     
-    public enum storageErrors: Error {
+    public enum StorageErrors: Error {
         case failedToUpload
-        case failedToGetDownloadURL
+        case failedToGetDownloadUrl
         
     }
     
  public func downloadURL(for path: String, completion: @escaping (Result<URL, Error>) -> Void) {
-            let reference = storage.child(path)
+         let reference = storage.child(path)
 
-            reference.downloadURL(completion: { url, error in
-                guard let url = url, error == nil else {
-                    completion(.failure(storageErrors.failedToGetDownloadURL))
-                    return
-                }
+         reference.downloadURL(completion: { url, error in
+             guard let url = url, error == nil else {
+                 completion(.failure(StorageErrors.failedToGetDownloadUrl))
+                 return
+             }
 
-                completion(.success(url))
-            })
-        }
-    }
+             completion(.success(url))
+         })
+     }
+ }

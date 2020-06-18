@@ -15,18 +15,16 @@ import GoogleSignIn
 class ProfileViewController: UIViewController {
 
     @IBOutlet var tableView: UITableView!
-    
+
     let data = ["Log Out"]
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(UITableViewCell.self,
+                           forCellReuseIdentifier: "cell")
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableHeaderView = createTableHeader()
-
     }
     
     func createTableHeader() -> UIView? {
@@ -62,6 +60,7 @@ class ProfileViewController: UIViewController {
             case .success(let url):
                 self?.downloadImage(imageView: imageView, url: url)
             case .failure(let error):
+                print("BRO")
                 print("Failed to get download url: \(error)")
             }
         })
