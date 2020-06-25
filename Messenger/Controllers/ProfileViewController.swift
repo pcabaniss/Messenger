@@ -33,16 +33,17 @@ class ProfileViewController: UIViewController {
         }
 
         let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
-        let filename = safeEmail + "_profile_picture.png"
-        let path = "images/"+filename
-
+        
+        let fileName = safeEmail + "_profile_picture.png"
+        let path = "images/"+fileName
+        
         let headerView = UIView(frame: CGRect(x: 0,
-                                        y: 0,
-                                        width: self.view.width,
-                                        height: 300))
+                                              y: 0,
+                                              width: self.view.width,
+                                              height: 300))
 
         headerView.backgroundColor = .link
-
+        
         let imageView = UIImageView(frame: CGRect(x: (headerView.width-150) / 2,
                                                   y: 75,
                                                   width: 150,
@@ -55,10 +56,12 @@ class ProfileViewController: UIViewController {
         imageView.layer.cornerRadius = imageView.width/2
         headerView.addSubview(imageView)
 
+
         StorageManager.shared.downloadURL(for: path, completion: { [weak self] result in
             switch result {
             case .success(let url):
                 self?.downloadImage(imageView: imageView, url: url)
+                
             case .failure(let error):
                 print("BRO")
                 print("Failed to get download url: \(error)")

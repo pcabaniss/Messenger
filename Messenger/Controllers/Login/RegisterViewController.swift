@@ -232,7 +232,7 @@ class RegisterViewController: UIViewController {
         //Firebase Log in
         
         //Check if user exists
-        DatabaseManager.shared.userExsist(with: email, completion: { [weak self] exists in
+        DatabaseManager.shared.userExists(with: email, completion: { [weak self] exists in
             guard let strongSelf = self else {
                           return
                       }
@@ -261,10 +261,12 @@ class RegisterViewController: UIViewController {
             DatabaseManager.shared.insertUser(with: chatUser, completion: { success in
                 if success {
                     //upload image
-                    guard let image = strongSelf.imageView.image, let data = image.pngData() else {
-                        return
+                    guard let image = strongSelf.imageView.image,
+                        let data = image.pngData() else {
+                            return
                     }
                     let fileName = chatUser.profilePictureFileName
+                    print(fileName)
                     StorageManager.shared.uploadProfilePicture(with: data, fileName: fileName, completion: { result in
                         switch result {
                         case.success(let downloadUrl):
