@@ -63,10 +63,12 @@ static NSObject<FBSDKAccessTokenCaching> *g_tokenCache;
 static NSMutableSet<FBSDKLoggingBehavior> *g_loggingBehaviors;
 static NSString *const FBSDKSettingsLimitEventAndDataUsage = @"com.facebook.sdk:FBSDKSettingsLimitEventAndDataUsage";
 static NSString *const FBSDKSettingsBitmask = @"com.facebook.sdk:FBSDKSettingsBitmask";
+static NSString *const FBSDKSettingsDataProcessingOptions = @"com.facebook.sdk:FBSDKSettingsDataProcessingOptions";
 static BOOL g_disableErrorRecovery;
 static NSString *g_userAgentSuffix;
 static NSString *g_defaultGraphAPIVersion;
 static FBSDKAccessTokenExpirer *g_accessTokenExpirer;
+static NSDictionary<NSString *, id> *g_dataProcessingOptions = nil;
 
 //
 //  Warning messages for App Event Flags
@@ -216,6 +218,31 @@ FBSDKSETTINGS_PLIST_CONFIGURATION_SETTING_IMPL(NSNumber, FacebookCodelessDebugLo
   return [g_loggingBehaviors copy];
 }
 
++ (void)setDataProcessingOptions:(nullable NSArray<NSString *> *)options
+{
+  [FBSDKSettings setDataProcessingOptions:options country:0 state:0];
+}
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
++ (void)setDataProcessingOptions:(nullable NSArray<NSString *> *)options
+                         country:(int)country
+                           state:(int)state
+{
+  NSDictionary<NSString *, id> *json = @{
+    DATA_PROCESSING_OPTIONS: options ?: @[],
+    DATA_PROCESSING_OPTIONS_COUNTRY: @(country),
+    DATA_PROCESSING_OPTIONS_STATE: @(state),
+  };
+  g_dataProcessingOptions = json;
+  NSData *data = [NSKeyedArchiver archivedDataWithRootObject:g_dataProcessingOptions];
+  if (data) {
+    [[NSUserDefaults standardUserDefaults] setObject:data
+                                              forKey:FBSDKSettingsDataProcessingOptions];
+  }
+}
+#pragma clang diagnostic pop
+
 + (void)setLoggingBehaviors:(NSSet<FBSDKLoggingBehavior> *)loggingBehaviors
 {
   if (![g_loggingBehaviors isEqualToSet:loggingBehaviors]) {
@@ -308,6 +335,36 @@ FBSDKSETTINGS_PLIST_CONFIGURATION_SETTING_IMPL(NSNumber, FacebookCodelessDebugLo
     return (NSNumber *)data;
   }
   return defaultValue;
+}
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
++ (NSDictionary<NSString *, id> *)dataProcessingOptions
+{
+  if (!g_dataProcessingOptions) {
+    NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:FBSDKSettingsDataProcessingOptions];
+    if ([data isKindOfClass:[NSData class]]) {
+      NSDictionary<NSString *, id> *dataProcessingOptions = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+      if (dataProcessingOptions && [dataProcessingOptions isKindOfClass:[NSDictionary class]]) {
+        g_dataProcessingOptions = dataProcessingOptions;
+      }
+    }
+  }
+  return g_dataProcessingOptions;
+}
+#pragma clang diagnostic pop
+
++ (BOOL)isDataProcessingRestricted
+{
+  NSArray<NSString *> *options = [FBSDKTypeUtility dictionary:[FBSDKSettings dataProcessingOptions]
+                                                 objectForKey:DATA_PROCESSING_OPTIONS
+                                                       ofType:NSArray.class];
+  for (NSString *option in options) {
+    if ([@"ldu" isEqualToString:[[FBSDKTypeUtility stringValue:option] lowercaseString]]) {
+      return YES;
+    }
+  }
+  return NO;
 }
 
 + (void)_logWarnings
