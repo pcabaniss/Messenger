@@ -8,13 +8,14 @@
 
 import Foundation
 import FirebaseDatabase
-
+import MessageKit
+///Controls the flow to the database of the application
 final class DatabaseManager {
 
     static let shared = DatabaseManager()
-
+///Sets a reference to be used in other controllers
     private let database = Database.database().reference()
-
+///Function to take in an email(String) and convert it to a String the database will accept
     static func safeEmail(emailAddress: String) -> String {
         var safeEmail = emailAddress.replacingOccurrences(of: ".", with: "-")
         safeEmail = safeEmail.replacingOccurrences(of: "@", with: "-")
@@ -24,7 +25,7 @@ final class DatabaseManager {
 }
 
 extension DatabaseManager {
-
+///Gets data of current conversation to be appended to or deleted
     public func getDataFor(path: String, completion: @escaping (Result<Any, Error>) -> Void) {
         self.database.child("\(path)").observeSingleEvent(of: .value) { snapshot in
             guard let value = snapshot.value else {
@@ -39,7 +40,7 @@ extension DatabaseManager {
 
 // MARK: - Account Mgmt
 extension DatabaseManager {
-
+///Checks if user already exists in database
     public func userExists(with email: String,
                            completion: @escaping ((Bool) -> Void)) {
 
@@ -108,7 +109,7 @@ extension DatabaseManager {
             })
         })
     }
-
+///Gets users for search bar function
     public func getAllUsers(completion: @escaping (Result<[[String: String]], Error>) -> Void) {
         database.child("users").observeSingleEvent(of: .value, with: { snapshot in
             guard let value = snapshot.value as? [[String: String]] else {
@@ -119,7 +120,7 @@ extension DatabaseManager {
             completion(.success(value))
         })
     }
-
+///Error handling for errors
     public enum DatabaseError: Error {
         case failedToFetch
     }
@@ -167,7 +168,7 @@ extension DatabaseManager {
             ]
            */
 
-    /// Creates a new conversation with target user emamil and first message sent
+    /// Creates a new conversation with target user email and first message sent
     public func createNewConversation(with otherUserEmail: String, name: String, firstMessage: Message, completion: @escaping (Bool) -> Void) {
         guard let currentEmail = UserDefaults.standard.value(forKey: "email") as? String,
             let currentNamme = UserDefaults.standard.value(forKey: "name") as? String else {
@@ -284,7 +285,7 @@ extension DatabaseManager {
             }
         })
     }
-
+///Completion handker thats sets thr data to thr parameters
     private func finishCreatingConversation(name: String, conversationID: String, firstMessage: Message, completion: @escaping (Bool) -> Void) {
 //        {
 //            "id": String,
@@ -404,6 +405,27 @@ extension DatabaseManager {
                     let date = ChatViewController.dateFormatter.date(from: dateString)else {
                         return nil
                 }
+                
+                var kind: MessageKind?
+                if type == "photo" {
+                    //Photo
+                }
+                else {
+                    guard let imageUrl = URL(string: content),
+                    let placeHolder = UIImage(systemName: "plus") else {
+                        return nil
+                    }
+                    
+                    let media = Media(url: imageUrl,
+                                      image: nil,
+                                      placeholderImage: placeHolder,
+                                      size: CGSize(width: 300, height: 300))
+                    kind = .photo(media)
+                }
+                
+                guard let finalKind = kind else {
+                    return nil
+                }
 
                 let sender = Sender(photoURL: "",
                                     senderId: senderEmail,
@@ -412,7 +434,7 @@ extension DatabaseManager {
                 return Message(sender: sender,
                                messageId: messageID,
                                sentDate: date,
-                               kind: .text(content))
+                               kind: finalKind)
             })
 
             completion(.success(messages))
@@ -450,7 +472,10 @@ extension DatabaseManager {
                 message = messageText
             case .attributedText(_):
                 break
-            case .photo(_):
+            case .photo(let mediaItem):
+                if let targetUrlString = mediaItem.url?.absoluteString {
+                    message = targetUrlString
+                }
                 break
             case .video(_):
                 break
@@ -484,7 +509,7 @@ extension DatabaseManager {
             ]
 
             currentMessages.append(newMessageEntry)
-
+///Update current messages
             strongSelf.database.child("\(conversation)/messages").setValue(currentMessages) { error, _ in
                 guard error == nil else {
                     completion(false)

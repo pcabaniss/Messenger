@@ -11,7 +11,7 @@ import UIKit
 import Firebase
 import FBSDKCoreKit
 import GoogleSignIn
-
+/// Controlls all the google sign in properties
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
 
@@ -62,7 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         }
 
         print("Did sign in with Google: \(user)")
-
+///Sets parameters of database to the google account holders
         guard let email = user.profile.email,
             let firstName = user.profile.givenName,
             let lastName = user.profile.familyName else {
@@ -71,7 +71,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
 
         UserDefaults.standard.set(email, forKey: "email")
         UserDefaults.standard.set("\(firstName) \(lastName)", forKey: "name")
-
+///Checks if user exists
         DatabaseManager.shared.userExists(with: email, completion: { exists in
             if !exists {
                 // insert to database

@@ -9,7 +9,7 @@
 import UIKit
 import FirebaseAuth
 import JGProgressHUD
-
+///Controlls the main page that will display the current conversations
 struct Conversation {
     let id: String
     let name: String
@@ -58,7 +58,7 @@ class ConversationsViewController: UIViewController {
         fetchConversations()
         startListeningForCOnversations()
     }
-
+///Realtime listener that communicates with database and updates current messages
     private func startListeningForCOnversations() {
         guard let email = UserDefaults.standard.value(forKey: "email") as? String else {
             return
@@ -94,7 +94,7 @@ class ConversationsViewController: UIViewController {
         let navVC = UINavigationController(rootViewController: vc)
         present(navVC, animated: true)
     }
-
+///Creates a new conversation and takes  you to newConvoController
     private func createNewConversation(result: [String: String]) {
         guard let name = result["name"],
             let email = result["email"] else {

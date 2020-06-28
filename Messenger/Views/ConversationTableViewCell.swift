@@ -8,11 +8,11 @@
 
 import UIKit
 import SDWebImage
-
+///Controller in charge of showing current conversations with different users
 class ConversationTableViewCell: UITableViewCell {
 
     static let identifier = "ConversationTableViewCell"
-
+///Image of recipient
     private let userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -20,20 +20,20 @@ class ConversationTableViewCell: UITableViewCell {
         imageView.layer.masksToBounds = true
         return imageView
     }()
-
+///Name of recipient
     private let userNameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 21, weight: .semibold)
         return label
     }()
-
+///Latet message from user
     private let userMessageLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 19, weight: .regular)
         label.numberOfLines = 0
         return label
     }()
-
+///ViewDidLoad for cell
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.addSubview(userImageView)
@@ -64,7 +64,7 @@ class ConversationTableViewCell: UITableViewCell {
                                         height: (contentView.height-20)/2)
 
     }
-
+///Gets conversation/picture for current cell
     public func configure(with model: Conversation) {
         self.userMessageLabel.text = model.latestMessage.text
         self.userNameLabel.text = model.name

@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-
+///Set extensions to certain keywords making code cleaner and more tangible
 extension UIView {
     
     public var width: CGFloat {
