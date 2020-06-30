@@ -60,9 +60,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Please allow access to take a profile picture.</string>
+	<string>Please allow access to use camera.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Please allow access to select a photo for profile picture.</string>
+	<string>Please allow access to photos.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Please allow access to microphone on device.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

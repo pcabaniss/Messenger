@@ -409,8 +409,8 @@ extension DatabaseManager {
                 if type == "photo" {
                     // photo
                     guard let imageUrl = URL(string: content),
-                    let placeHolder = UIImage(systemName: "plus") else {
-                        return nil
+                        let placeHolder = UIImage(systemName: "plus") else {
+                            return nil
                     }
                     let media = Media(url: imageUrl,
                                       image: nil,
@@ -418,28 +418,40 @@ extension DatabaseManager {
                                       size: CGSize(width: 300, height: 300))
                     kind = .photo(media)
                 }
+                else  if type == "video" {
+                    // photo
+                    guard let videoUrl = URL(string: content),
+                        let placeHolder = UIImage(systemName: "play.fill") else {
+                            return nil
+                    }
+                    let media = Media(url: videoUrl,
+                                      image: nil,
+                                      placeholderImage: placeHolder,
+                                      size: CGSize(width: 300, height: 300))
+                    kind = .video(media)
+                }
                 else {
                     kind = .text(content)
                 }
-
+                
                 guard let finalKind = kind else {
                     return nil
                 }
-
+                
                 let sender = Sender(photoURL: "",
                                     senderId: senderEmail,
                                     displayName: name)
-
+                
                 return Message(sender: sender,
                                messageId: messageID,
                                sentDate: date,
                                kind: finalKind)
             })
-
+            
             completion(.success(messages))
         })
     }
-
+    
     /// Sends a message with target conversation and message
     public func sendMessage(to conversation: String, otherUserEmail: String, name: String, newMessage: Message, completion: @escaping (Bool) -> Void) {
         // add new message to messages
@@ -476,7 +488,10 @@ extension DatabaseManager {
                     message = targetUrlString
                 }
                 break
-            case .video(_):
+            case .video(let mediaItem):
+                if let targetUrlString = mediaItem.url?.absoluteString {
+                    message = targetUrlString
+                }
                 break
             case .location(_):
                 break
@@ -596,6 +611,44 @@ extension DatabaseManager {
                 })
             }
         })
+    }
+    
+    public func deleteConversations(conversationId: String, completion: @escaping (Bool) -> Void) {
+        guard let email = UserDefaults.standard.value(forKey: "email") as? String else {
+            return
+        }
+        let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
+        print("Deleting conversations with id: \(conversationId)")
+        //Get all conversations for current user
+        //delete conversatin in collection with target ID
+        //reset conversations for the user in database
+        let ref = database.child("\(safeEmail)/conversations")
+        ref.observeSingleEvent(of: .value) {snapshot in
+            if var conversations = snapshot.value as? [[String: Any]] {
+                var positionToRemove = 0
+                for conversation in conversations {
+                    if let id = conversation["id"] as? String,
+                        id == conversationId {
+                        print("Found conversation to delete")
+                        break
+                    }
+                    positionToRemove += 1
+                }
+                
+                conversations.remove(at: positionToRemove)
+                ref.setValue(conversations, withCompletionBlock: {error, _ in
+                    guard error == nil else {
+                        completion(false)
+                        print("Failed to write new conversation array")
+                        return
+                    }
+                    print("Deleted conversation")
+                    completion(true)
+                    
+                })
+            }
+        }
+        
     }
 
 }
