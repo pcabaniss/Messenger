@@ -62,7 +62,7 @@ class NewConversationViewController: UIViewController {
                                                             target: self,
                                                             action: #selector(dismissSelf))
         
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         searchBar.becomeFirstResponder()
         
     }

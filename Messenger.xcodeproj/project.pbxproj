@@ -13,6 +13,7 @@
 		BF32392C2498878A008A7940 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF32392B2498878A008A7940 /* StorageManager.swift */; };
 		BF32392E249C7F12008A7940 /* ConversationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF32392D249C7F12008A7940 /* ConversationTableViewCell.swift */; };
 		BF43724724A9C2BD00A78AD7 /* NewConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF43724624A9C2BD00A78AD7 /* NewConversationCell.swift */; };
+		BF43724924AC7BEB00A78AD7 /* LocationPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF43724824AC7BEB00A78AD7 /* LocationPickerViewController.swift */; };
 		BFE045B3248FCE58005059A5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE045B2248FCE58005059A5 /* AppDelegate.swift */; };
 		BFE045B5248FCE58005059A5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE045B4248FCE58005059A5 /* SceneDelegate.swift */; };
 		BFE045B7248FCE58005059A5 /* ConversationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE045B6248FCE58005059A5 /* ConversationsViewController.swift */; };
@@ -36,6 +37,7 @@
 		BF32392B2498878A008A7940 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		BF32392D249C7F12008A7940 /* ConversationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewCell.swift; sourceTree = "<group>"; };
 		BF43724624A9C2BD00A78AD7 /* NewConversationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationCell.swift; sourceTree = "<group>"; };
+		BF43724824AC7BEB00A78AD7 /* LocationPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPickerViewController.swift; sourceTree = "<group>"; };
 		BFE045AF248FCE58005059A5 /* Messenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Messenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFE045B2248FCE58005059A5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFE045B4248FCE58005059A5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 				BFE045D4248FD46E005059A5 /* NewConversationViewController.swift */,
 				BFE045D6248FD485005059A5 /* ProfileViewController.swift */,
 				BF3239292497368A008A7940 /* ChatViewController.swift */,
+				BF43724824AC7BEB00A78AD7 /* LocationPickerViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -199,6 +202,7 @@
 				BFE045AD248FCE58005059A5 /* Resources */,
 				0C591310A7FF6D7648FCC678 /* [CP] Embed Pods Frameworks */,
 				15B85F905E41BA5B0A2DBFFC /* [CP] Copy Pods Resources */,
+				BF43724A24ADB58900A78AD7 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -291,6 +295,23 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Messenger/Pods-Messenger-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		BF43724A24ADB58900A78AD7 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
+		};
 		D0D16164F6B521D690E4E6D8 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -335,6 +356,7 @@
 				BF32392A2497368A008A7940 /* ChatViewController.swift in Sources */,
 				BFE045D1248FD3F2005059A5 /* PhotoViewerViewController.swift in Sources */,
 				BF32392C2498878A008A7940 /* StorageManager.swift in Sources */,
+				BF43724924AC7BEB00A78AD7 /* LocationPickerViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
