@@ -10,20 +10,9 @@ import UIKit
 import FirebaseAuth
 import JGProgressHUD
 ///Controlls the main page that will display the current conversations
-struct Conversation {
-    let id: String
-    let name: String
-    let otherUserEmail: String
-    let latestMessage: LatestMessage
-}
 
-struct LatestMessage {
-    let date: String
-    let text: String
-    let isRead: Bool
-}
-
-class ConversationsViewController: UIViewController {
+/// Controller that shows a list of conversations
+final class ConversationsViewController: UIViewController {
 
     private let spinner = JGProgressHUD(style: .dark)
 
@@ -236,12 +225,12 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
             let conversationId = conversations[indexPath.row].id
             
             tableView.beginUpdates()
+            self.conversations.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .left)
             
-            DatabaseManager.shared.deleteConversations(conversationId: conversationId, completion: { [weak self] success in
+            DatabaseManager.shared.deleteConversations(conversationId: conversationId, completion: { success in
                 if success {
-                    self?.conversations.remove(at: indexPath.row)
-                    tableView.deleteRows(at: [indexPath], with: .left)
-
+                    // add model and row back and show error alert
                 }
                 
             })
